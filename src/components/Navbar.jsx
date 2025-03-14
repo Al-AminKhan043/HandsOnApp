@@ -19,7 +19,7 @@ const Navbar = () => {
   const handleLogout = async () => {
     try {
       await axios.post("http://localhost:5000/api/users/logout", {}, { withCredentials: true });
-      dispatch(logout());
+      dispatch(logout()); // Dispatch logout action
       localStorage.removeItem("isLoggedIn"); // Clear localStorage
     } catch (err) {
       console.error("Logout failed:", err);
@@ -34,7 +34,7 @@ const Navbar = () => {
         <li><Link to="/events">Events</Link></li>
         <li><Link to="/posts">Posts</Link></li>
 
-        {/* Conditionally show Login/Signup or Logout */}
+        {/* Conditionally render Login/Signup or Logout based on the login state */}
         {!isLoggedIn ? (
           <>
             <li><Link to="/signup">Sign Up</Link></li>
