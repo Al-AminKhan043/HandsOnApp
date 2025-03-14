@@ -1,21 +1,26 @@
-import React from "react";
-import { Link, useNavigate } from "react-router-dom"; // Import useNavigate for redirection
+import React, { useEffect } from "react";
+import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { login, logout } from "../utils/authSlice"; // Import actions
 import axios from "axios";
 
-const Navbar = ({ isLoggedIn, setIsLoggedIn }) => {
-  const navigate = useNavigate();
+const Navbar = () => {
+  const dispatch = useDispatch();
+  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn) || localStorage.getItem("isLoggedIn") === "true";
 
-  // Handle logout logic
+  // Sync Redux state with localStorage on mount
+  useEffect(() => {
+    if (localStorage.getItem("isLoggedIn") === "true") {
+      dispatch(login()); // Ensure Redux stays in sync
+    }
+  }, [dispatch]);
+
+  // Handle logout
   const handleLogout = async () => {
     try {
-      // Make a request to the backend logout endpoint
       await axios.post("http://localhost:5000/api/users/logout", {}, { withCredentials: true });
-      
-      // Update state to reflect user is logged out
-      setIsLoggedIn(false);
-      
-      // Redirect user to login page after logging out
-      navigate("/login");
+      dispatch(logout());
+      localStorage.removeItem("isLoggedIn"); // Clear localStorage
     } catch (err) {
       console.error("Logout failed:", err);
     }
@@ -29,7 +34,7 @@ const Navbar = ({ isLoggedIn, setIsLoggedIn }) => {
         <li><Link to="/events">Events</Link></li>
         <li><Link to="/posts">Posts</Link></li>
 
-        {/* Show Login/Signup or Logout based on login state */}
+        {/* Conditionally show Login/Signup or Logout */}
         {!isLoggedIn ? (
           <>
             <li><Link to="/signup">Sign Up</Link></li>

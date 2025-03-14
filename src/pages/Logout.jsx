@@ -1,25 +1,30 @@
-import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
+// LogoutButton.jsx
+import React from 'react';
+import { useDispatch } from 'react-redux'; // Import the necessary hooks
+import { logout } from '../utils/authSlice'; // Import the logout action
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
-export default function Logout(){
-    const navigate=useNavigate();
-    useEffect(()=>{
-        const logoutUser = async()=>{
-            try{
-             await axios.post('http://localhost:5000/api/users/logout',{},{
-                headers:{
-                    Authorization: `Bearer ${localStorage.getItem("jwt")}`
-                }
-             })
-             localStorage.removeItem('jwt');
-             navigate('/')  
-            }
-            catch(err){
-                console.error("Error during logout:", err);
-            }
-        }
-        logoutUser();
-    },[navigate])
-    return null;
-}
+const Logout=() => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      // Make a request to the backend logout endpoint
+      await axios.post("http://localhost:5000/api/users/logout", {}, { withCredentials: true });
+
+      // Dispatch the logout action to update Redux state
+      dispatch(logout());
+
+      // Redirect user to login page after logging out
+      navigate("/login");
+    } catch (err) {
+      console.error("Logout failed:", err);
+    }
+  };
+
+  return <button onClick={handleLogout}>Logout</button>;
+};
+
+export default Logout;
