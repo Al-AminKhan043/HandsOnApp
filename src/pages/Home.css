@@ -1,0 +1,14 @@
+.home-title {
+    font-size: 3rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+  
+  .home-subtitle {
+    font-size: 1.8rem;
+    font-weight: 500;
+    opacity: 0.9;
+  }
+  .home-bg {
+    background-color: #f8f9fa; /* Light grey background */
+  }
