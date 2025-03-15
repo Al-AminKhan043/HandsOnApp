@@ -1,51 +1,56 @@
 import React, { useEffect } from "react";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { login, logout } from "../utils/authSlice"; // Import actions
+import { login, logout } from "../utils/authSlice";
 import axios from "axios";
+import { Navbar, Nav, Button, Container } from "react-bootstrap";
 
-const Navbar = () => {
+const Navigation = () => {
   const dispatch = useDispatch();
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn) || localStorage.getItem("isLoggedIn") === "true";
 
-  // Sync Redux state with localStorage on mount
   useEffect(() => {
     if (localStorage.getItem("isLoggedIn") === "true") {
-      dispatch(login()); // Ensure Redux stays in sync
+      dispatch(login());
     }
   }, [dispatch]);
 
-  // Handle logout
   const handleLogout = async () => {
     try {
       await axios.post("http://localhost:5000/api/users/logout", {}, { withCredentials: true });
-      dispatch(logout()); // Dispatch logout action
-      localStorage.removeItem("isLoggedIn"); // Clear localStorage
+      dispatch(logout());
+      localStorage.removeItem("isLoggedIn");
     } catch (err) {
       console.error("Logout failed:", err);
     }
   };
 
   return (
-    <nav>
-      <ul>
-        <li><Link to="/">Home</Link></li>
-        <li><Link to="/account">Account</Link></li>
-        <li><Link to="/events">Events</Link></li>
-        <li><Link to="/posts">Posts</Link></li>
-
-        {/* Conditionally render Login/Signup or Logout based on the login state */}
-        {!isLoggedIn ? (
-          <>
-            <li><Link to="/signup">Sign Up</Link></li>
-            <li><Link to="/login">Login</Link></li>
-          </>
-        ) : (
-          <li><button onClick={handleLogout}>Logout</button></li>
-        )}
-      </ul>
-    </nav>
+    <Navbar bg="dark" variant="dark" expand="lg">
+      <Container>
+        <Navbar.Brand href="/">HandsOn</Navbar.Brand>
+        <Navbar.Toggle aria-controls="basic-navbar-nav" />
+        <Navbar.Collapse id="basic-navbar-nav">
+          <Nav className="me-auto">
+            <NavLink to="/" className="nav-link">Home</NavLink>
+            <NavLink to="/account" className="nav-link">Account</NavLink>
+            <NavLink to="/events" className="nav-link">Events</NavLink>
+            <NavLink to="/posts" className="nav-link">Posts</NavLink>
+          </Nav>
+          <Nav>
+            {!isLoggedIn ? (
+              <>
+                <NavLink to="/signup" className="nav-link">Sign Up</NavLink>
+                <NavLink to="/login" className="nav-link">Login</NavLink>
+              </>
+            ) : (
+              <Button variant="outline-light" onClick={handleLogout}>Logout</Button>
+            )}
+          </Nav>
+        </Navbar.Collapse>
+      </Container>
+    </Navbar>
   );
 };
 
-export default Navbar;
+export default Navigation;
