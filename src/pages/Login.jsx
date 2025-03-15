@@ -15,7 +15,7 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     setError(""); // Clear previous errors
-
+  
     try {
       const response = await axios.post(
         "http://localhost:5000/api/users/login",
@@ -24,12 +24,19 @@ const Login = () => {
       );
 
       if (response.status === 200) {
-        dispatch(login()); // ✅ Update Redux state
-        localStorage.setItem("isLoggedIn", "true"); // ✅ Persist login state
-        navigate("/"); // ✅ Redirect to homepage
+        const { token, user } = response.data; // Extract token and user data
+
+        // Store user and token in localStorage
+        localStorage.setItem("token", token);
+        localStorage.setItem("user", JSON.stringify(user));
+
+        // Dispatch login action with user and token
+        dispatch(login({ user, token }));
+
+        navigate("/"); // Redirect to homepage or dashboard
       }
     } catch (err) {
-      setError("Invalid email or password");
+      setError(err.response?.data?.message || "Invalid email or password");
       console.error("Login error:", err);
     }
   };

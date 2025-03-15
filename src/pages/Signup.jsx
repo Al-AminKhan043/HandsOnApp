@@ -16,6 +16,7 @@ export default function Signup() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setErrorMessage(""); // Clear previous errors
 
         if (password !== confirmPassword) {
             setErrorMessage("Passwords don't match!");
@@ -26,16 +27,24 @@ export default function Signup() {
             const response = await axios.post("http://localhost:5000/api/users/signup", {
                 name,
                 email,
-                password,
-                confirmPassword,
+                password, // Remove confirmPassword from request
             });
 
-            const { token, user } = response.data;
-            dispatch(login({ token, user }));
-            localStorage.setItem("token", token);
-            navigate("/");
+            if (response.status === 201) { // Ensure successful registration
+                const { token, user } = response.data;
+
+                // Store token and user in localStorage
+                localStorage.setItem("token", token);
+                localStorage.setItem("user", JSON.stringify(user));
+
+                // Dispatch login to update Redux state
+                dispatch(login({ token, user }));
+
+                navigate("/"); // Redirect to homepage or dashboard
+            }
         } catch (err) {
             setErrorMessage(err.response?.data?.message || "Error signing up. Please try again.");
+            console.error("Signup error:", err);
         }
     };
 

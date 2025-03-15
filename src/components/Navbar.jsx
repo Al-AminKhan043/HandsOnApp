@@ -7,19 +7,24 @@ import { Navbar, Nav, Button, Container } from "react-bootstrap";
 
 const Navigation = () => {
   const dispatch = useDispatch();
-  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn) || localStorage.getItem("isLoggedIn") === "true";
+  const { isLoggedIn, user } = useSelector((state) => state.auth); // Extract user and login state
 
+  // Check for token and user data in localStorage on initial load
   useEffect(() => {
-    if (localStorage.getItem("isLoggedIn") === "true") {
-      dispatch(login());
+    const token = localStorage.getItem("token");
+    const storedUser = localStorage.getItem("user");
+    
+    if (token && storedUser) {
+      dispatch(login({ token, user: JSON.parse(storedUser) }));
     }
   }, [dispatch]);
 
   const handleLogout = async () => {
     try {
       await axios.post("http://localhost:5000/api/users/logout", {}, { withCredentials: true });
-      dispatch(logout());
-      localStorage.removeItem("isLoggedIn");
+      dispatch(logout()); // Dispatch logout action
+      localStorage.removeItem("token"); // Remove token from localStorage
+      localStorage.removeItem("user");  // Remove user data from localStorage
     } catch (err) {
       console.error("Logout failed:", err);
     }
@@ -44,7 +49,10 @@ const Navigation = () => {
                 <NavLink to="/login" className="nav-link">Login</NavLink>
               </>
             ) : (
-              <Button variant="outline-light" onClick={handleLogout}>Logout</Button>
+              <>
+                <span className="nav-link text-light">{user?.name}</span>
+                <Button variant="outline-light" onClick={handleLogout}>Logout</Button>
+              </>
             )}
           </Nav>
         </Navbar.Collapse>
