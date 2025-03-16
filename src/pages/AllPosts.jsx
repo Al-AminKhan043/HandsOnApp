@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useSelector } from "react-redux";
@@ -11,11 +11,8 @@ const AllPosts = () => {
 
   const { isLoggedIn, user } = useSelector((state) => state.auth); // Get user data from Redux
   
-  useEffect(() => {
-     // Debugging
-  }, [user]);
-
-  const fetchPosts = async () => {
+  // Wrap the fetchPosts function in useCallback to memoize it
+  const fetchPosts = useCallback(async () => {
     try {
       const res = await axios.get(`http://localhost:5000/api/posts?page=${page}&limit=5`);
 
@@ -35,11 +32,11 @@ const AllPosts = () => {
     } catch (err) {
       console.error("Error fetching posts:", err);
     }
-  };
+  }, [page]); // Memoizing the function to avoid re-renders on every change
 
   useEffect(() => {
     fetchPosts();
-  }, []); // ✅ Runs only once when the component mounts
+  }, [fetchPosts]); // ✅ Runs only once when the component mounts
 
   const handleEdit = (post) => {
     console.log("Editing post:", post);
@@ -47,7 +44,6 @@ const AllPosts = () => {
 
   const handleDelete = async (postId) => {
     const token = localStorage.getItem("token"); // Ensure token exists
-     // Debugging
   
     if (!token) {
       alert("Unauthorized: No token found!");
@@ -69,7 +65,6 @@ const AllPosts = () => {
       }
     }
   };
-  
 
   return (
     <div className="container mt-4">
@@ -82,10 +77,7 @@ const AllPosts = () => {
         loader={<h4 className="text-center">Loading more posts...</h4>}
       >
         {posts.map((post) => {
-          
-
           const isPostOwner = isLoggedIn && (user?._id || user?.id) === post.postedBy?._id;
-        
 
           return (
             <div key={post._id} className="card mb-4 shadow-sm border-0 rounded-3" style={{ backgroundColor: "#f8f9fa" }}>
