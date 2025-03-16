@@ -5,7 +5,7 @@ import Signup from "./pages/Signup";
 import Home from "./pages/Home";
 import Account from "./pages/Account";
 import Events from "./pages/Events";
-import Posts from "./pages/Posts";
+import PostLists from "./pages/PostLists";
 
 function App() {
   return (
@@ -17,7 +17,7 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/account" element={<Account />} />
         <Route path="/events" element={<Events />} />
-        <Route path="/posts" element={<Posts />} />
+        <Route path="/posts/*" element={<PostLists />} />
       </Routes>
     </Router>
   );
