@@ -17,7 +17,7 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/account" element={<Account />} />
         <Route path="/events" element={<Events />} />
-        <Route path="/posts" element={<PostLists />} />
+        <Route path="/posts/*" element={<PostLists />} />
       </Routes>
     </Router>
   );
