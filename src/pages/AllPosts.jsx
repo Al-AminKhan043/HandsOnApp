@@ -10,7 +10,7 @@ const AllPosts = () => {
   const [hasMore, setHasMore] = useState(true);
 
   const { isLoggedIn, user } = useSelector((state) => state.auth); // Get user data from Redux
-  
+
   // Wrap the fetchPosts function in useCallback to memoize it
   const fetchPosts = useCallback(async () => {
     try {
@@ -42,14 +42,14 @@ const AllPosts = () => {
     console.log("Editing post:", post);
   };
 
-  const handleDelete = async (postId) => {
+  const handleDeletePost = async (postId) => {
     const token = localStorage.getItem("token"); // Ensure token exists
-  
+
     if (!token) {
       alert("Unauthorized: No token found!");
       return;
     }
-  
+
     if (window.confirm("Are you sure you want to delete this post?")) {
       try {
         await axios.delete(`http://localhost:5000/api/posts/${postId}`, {
@@ -57,11 +57,42 @@ const AllPosts = () => {
             Authorization: `Bearer ${token}`,
           },
         });
-  
+
         setPosts(posts.filter((post) => post._id !== postId));
         alert("Post deleted successfully!");
       } catch (error) {
         console.error("Error deleting post:", error.response?.data || error.message);
+      }
+    }
+  };
+
+  const handleDeleteComment = async (commentId) => {
+    const token = localStorage.getItem("token"); // Ensure token exists
+
+    if (!token) {
+      alert("Unauthorized: No token found!");
+      return;
+    }
+
+    if (window.confirm("Are you sure you want to delete this comment?")) {
+      try {
+        await axios.delete(`http://localhost:5000/api/comments/${commentId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        setPosts((prevPosts) => {
+          return prevPosts.map((post) => {
+            return {
+              ...post,
+              comments: post.comments.filter((comment) => comment._id !== commentId),
+            };
+          });
+        });
+        alert("Comment deleted successfully!");
+      } catch (error) {
+        console.error("Error deleting comment:", error.response?.data || error.message);
       }
     }
   };
@@ -85,12 +116,12 @@ const AllPosts = () => {
                 <div className="d-flex justify-content-between align-items-center">
                   <h4 className="card-title text-primary fw-bold">{post.title}</h4>
                   {isPostOwner && (
-                    <div>
+                    <div className="d-flex">
                       <Button variant="outline-primary" size="sm" className="me-2" onClick={() => handleEdit(post)}>
                         Edit
                       </Button>
-                      <Button variant="outline-danger" size="sm" onClick={() => handleDelete(post._id)}>
-                        Delete
+                      <Button variant="outline-danger" size="sm" onClick={() => handleDeletePost(post._id)}>
+                        Delete Post
                       </Button>
                     </div>
                   )}
@@ -104,11 +135,26 @@ const AllPosts = () => {
                   <div className="mt-3">
                     <h6 className="text-secondary">💬 Comments:</h6>
                     <ul className="list-group">
-                      {post.comments.map((comment) => (
-                        <li key={comment._id} className="list-group-item bg-light border-0 rounded">
-                          <strong className="text-primary">{comment.postedBy.name}:</strong> {comment.text}
-                        </li>
-                      ))}
+                      {post.comments.map((comment) => {
+                        const isCommentOwner = isLoggedIn && (user?._id || user?.id) === comment.postedBy?._id;
+
+                        return (
+                            <li key={comment._id} className="list-group-item bg-light border-0 rounded">
+                            <div className="d-flex justify-content-between align-items-center">
+                              <div className="d-flex flex-column">
+                                <strong className="text-primary">{comment.postedBy.name}:</strong>
+                                <span>{comment.text}</span>
+                              </div>
+                              {isCommentOwner && (
+                                <Button variant="outline-danger" size="sm" onClick={() => handleDeleteComment(comment._id)}>
+                                  Delete Comment
+                                </Button>
+                              )}
+                            </div>
+                          </li>
+                          
+                        );
+                      })}
                     </ul>
                   </div>
                 )}
