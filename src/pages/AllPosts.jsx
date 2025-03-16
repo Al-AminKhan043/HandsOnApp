@@ -10,7 +10,7 @@ const AllPosts = () => {
   const [hasMore, setHasMore] = useState(true);
 
   const { isLoggedIn, user } = useSelector((state) => state.auth); // Get user data from Redux
-
+  
   useEffect(() => {
      // Debugging
   }, [user]);
@@ -46,21 +46,30 @@ const AllPosts = () => {
   };
 
   const handleDelete = async (postId) => {
+    const token = localStorage.getItem("token"); // Ensure token exists
+     // Debugging
+  
+    if (!token) {
+      alert("Unauthorized: No token found!");
+      return;
+    }
+  
     if (window.confirm("Are you sure you want to delete this post?")) {
       try {
         await axios.delete(`http://localhost:5000/api/posts/${postId}`, {
           headers: {
-            Authorization: `Bearer ${user?.token}`,
+            Authorization: `Bearer ${token}`,
           },
         });
-
+  
         setPosts(posts.filter((post) => post._id !== postId));
         alert("Post deleted successfully!");
       } catch (error) {
-        console.error("Error deleting post:", error);
+        console.error("Error deleting post:", error.response?.data || error.message);
       }
     }
   };
+  
 
   return (
     <div className="container mt-4">
