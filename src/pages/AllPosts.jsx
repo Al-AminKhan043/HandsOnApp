@@ -124,15 +124,15 @@ const AllPosts = () => {
                   {isPostOwner && (
                     <div className="d-flex">
                       <Button
-                        variant="outline-primary"
+                        variant="warning"
                         size="sm"
                         className="me-2"
                         onClick={() => handleEditPost(post)}
                       >
-                        Edit
+                        ✏️ Edit Post
                       </Button>
-                      <Button variant="outline-danger" size="sm" onClick={() => handleDeletePost(post._id)}>
-                        Delete Post
+                      <Button variant="danger" size="sm" onClick={() => handleDeletePost(post._id)}>
+                      🗑️ Delete Post
                       </Button>
                     </div>
                   )}

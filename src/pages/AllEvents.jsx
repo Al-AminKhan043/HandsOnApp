@@ -124,15 +124,15 @@ const AllEvents = () => {
                   {isEventOwner && (
                     <div className="d-flex">
                       <Button
-                        variant="outline-primary"
+                        variant="warning"
                         size="sm"
                         className="me-2"
                         onClick={() => handleEditEvent(event)}
                       >
-                        Edit
+                       ✏️ Edit Event
                       </Button>
-                      <Button variant="outline-danger" size="sm" onClick={() => handleDeleteEvent(event._id)}>
-                        Delete Event
+                      <Button variant="danger" size="sm" onClick={() => handleDeleteEvent(event._id)}>
+                      🗑️ Delete Event
                       </Button>
                     </div>
                   )}
