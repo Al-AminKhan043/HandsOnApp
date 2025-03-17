@@ -21,6 +21,7 @@
     "react-infinite-scroll-component": "^6.1.0",
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.3.0",
+    "react-time-picker": "^7.0.0",
     "react-toastify": "^11.0.5",
     "redux": "^5.0.1"
   },

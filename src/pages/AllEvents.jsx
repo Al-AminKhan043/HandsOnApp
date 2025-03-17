@@ -20,27 +20,35 @@ const AllEvents = () => {
   const fetchEvents = useCallback(async () => {
     try {
       const res = await axios.get(`http://localhost:5000/api/events?page=${page}&limit=5`);
-
+  
       if (res.data.events.length > 0) {
         setEvents((prevEvents) => {
+          // Filter out already existing events
           const newEvents = res.data.events.filter(
             (newEvent) => !prevEvents.some((prevEvent) => prevEvent._id === newEvent._id)
           );
-          return [...prevEvents, ...newEvents];
+          
+          // Sort the events so the newest event is first
+          const allEvents = [...prevEvents, ...newEvents].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  
+          return allEvents;
         });
-
+  
+        // Increment page number to fetch the next set of events
         setPage((prevPage) => prevPage + 1);
       } else {
+        // If no events are returned, set hasMore to false to indicate no more events
         setHasMore(false);
       }
     } catch (err) {
       console.error("Error fetching events:", err);
     }
   }, [page]);
-
+  
   useEffect(() => {
     fetchEvents();
   }, [fetchEvents]);
+  
 
   const handleDeleteEvent = async (eventId) => {
     const token = localStorage.getItem("token");
@@ -63,6 +71,8 @@ const AllEvents = () => {
       }
     }
   };
+  
+
 
   const handleEditEvent = (event) => {
     setEditingEvent(event); // Set the event data to be edited
@@ -165,73 +175,85 @@ const AllEvents = () => {
       </InfiniteScroll>
 
       {/* Edit Event Modal */}
-      {editingEvent && (
-        <Modal show={showEditModal} onHide={() => setShowEditModal(false)}>
-          <Modal.Header closeButton>
-            <Modal.Title>Edit Event</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <Form>
-              <Form.Group controlId="editTitle">
-                <Form.Label>Title</Form.Label>
-                <Form.Control
-                  type="text"
-                  value={editingEvent.title}
-                  onChange={(e) => setEditingEvent({ ...editingEvent, title: e.target.value })}
-                />
-              </Form.Group>
+      {/* Edit Event Modal */}
+{editingEvent && (
+  <Modal show={showEditModal} onHide={() => setShowEditModal(false)}>
+    <Modal.Header closeButton>
+      <Modal.Title>Edit Event</Modal.Title>
+    </Modal.Header>
+    <Modal.Body>
+      <Form>
+        <Form.Group controlId="editTitle">
+          <Form.Label>Title</Form.Label>
+          <Form.Control
+            type="text"
+            value={editingEvent.title}
+            onChange={(e) => setEditingEvent({ ...editingEvent, title: e.target.value })}
+          />
+        </Form.Group>
 
-              <Form.Group controlId="editLevel" className="mt-3">
-                <Form.Label>Level</Form.Label>
-                <Form.Control
-                  type="text"
-                  value={editingEvent.level}
-                  onChange={(e) => setEditingEvent({ ...editingEvent, level: e.target.value })}
-                />
-              </Form.Group>
+        <Form.Group controlId="editLocation" className="mt-3">
+          <Form.Label>Location</Form.Label>
+          <Form.Control
+            type="text"
+            value={editingEvent.location}
+            onChange={(e) => setEditingEvent({ ...editingEvent, location: e.target.value })}
+          />
+        </Form.Group>
 
-              <Form.Group controlId="editDescription" className="mt-3">
-                <Form.Label>Description</Form.Label>
-                <Form.Control
-                  as="textarea"
-                  rows={3}
-                  value={editingEvent.description}
-                  onChange={(e) => setEditingEvent({ ...editingEvent, description: e.target.value })}
-                />
-              </Form.Group>
+        <Form.Group controlId="editDescription" className="mt-3">
+          <Form.Label>Description</Form.Label>
+          <Form.Control
+            as="textarea"
+            rows={3}
+            value={editingEvent.description}
+            onChange={(e) => setEditingEvent({ ...editingEvent, description: e.target.value })}
+          />
+        </Form.Group>
 
-              {/* Date Picker */}
-              <Form.Group controlId="editDate" className="mt-3">
-                <Form.Label>Date</Form.Label>
-                <DatePicker
-                  selected={new Date(editingEvent.date)}
-                  onChange={(date) => setEditingEvent({ ...editingEvent, date })}
-                  className="form-control"
-                  dateFormat="yyyy-MM-dd"
-                />
-              </Form.Group>
+        {/* Date Picker */}
+        <Form.Group controlId="editDate" className="mt-3">
+          <Form.Label>Date</Form.Label>
+          <DatePicker
+            selected={new Date(editingEvent.date)}
+            onChange={(date) => setEditingEvent({ ...editingEvent, date })}
+            className="form-control"
+            dateFormat="yyyy-MM-dd"
+          />
+        </Form.Group>
 
-              {/* Time Picker */}
-              <Form.Group controlId="editTime" className="mt-3">
-                <Form.Label>Time</Form.Label>
-                <Form.Control
-                  type="time"
-                  value={editingEvent.time}
-                  onChange={(e) => setEditingEvent({ ...editingEvent, time: e.target.value })}
-                />
-              </Form.Group>
-            </Form>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={() => setShowEditModal(false)}>
-              Close
-            </Button>
-            <Button variant="primary" onClick={handleSaveEdit}>
-              Save Changes
-            </Button>
-          </Modal.Footer>
-        </Modal>
-      )}
+        {/* Time Picker */}
+        <Form.Group controlId="editTime" className="mt-3">
+          <Form.Label>Time</Form.Label>
+          <Form.Control
+            type="time"
+            value={editingEvent.time}
+            onChange={(e) => setEditingEvent({ ...editingEvent, time: e.target.value })}
+          />
+        </Form.Group>
+
+        {/* Category Field */}
+        <Form.Group controlId="editCategory" className="mt-3">
+          <Form.Label>Category</Form.Label>
+          <Form.Control
+            type="text"
+            value={editingEvent.category}
+            onChange={(e) => setEditingEvent({ ...editingEvent, category: e.target.value })}
+          />
+        </Form.Group>
+      </Form>
+    </Modal.Body>
+    <Modal.Footer>
+      <Button variant="secondary" onClick={() => setShowEditModal(false)}>
+        Close
+      </Button>
+      <Button variant="primary" onClick={handleSaveEdit}>
+        Save Changes
+      </Button>
+    </Modal.Footer>
+  </Modal>
+)}
+
     </div>
   );
 };
