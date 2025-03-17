@@ -2,15 +2,18 @@ import React, { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useSelector } from "react-redux";
-import { Button, Modal, Form } from "react-bootstrap"; // Import Modal and Form components
-
+import { Button, Modal, Form } from "react-bootstrap";
+import DatePicker from "react-datepicker"; // Import date picker
+import "react-datepicker/dist/react-datepicker.css"; // Import necessary styles
+import { toast } from "react-toastify"; // For notifications
+import "react-toastify/dist/ReactToastify.css";
 
 const AllEvents = () => {
   const [events, setEvents] = useState([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
-  const [showEditModal, setShowEditModal] = useState(false); // State to control modal visibility
-  const [editingEvent, setEditingEvent] = useState(null); // State to store the event being edited
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editingEvent, setEditingEvent] = useState(null);
 
   const { isLoggedIn, user } = useSelector((state) => state.auth);
 
@@ -79,8 +82,11 @@ const AllEvents = () => {
         `http://localhost:5000/api/events/${editingEvent._id}/edit`,
         {
           title: editingEvent.title,
-          level: editingEvent.level,
           description: editingEvent.description,
+          date: editingEvent.date,
+          time: editingEvent.time,
+          location: editingEvent.location,
+          category: editingEvent.category,
         },
         {
           headers: {
@@ -96,8 +102,8 @@ const AllEvents = () => {
       });
 
       setShowEditModal(false); // Close the modal
-      alert("Event updated successfully!");
-      window.location.reload();
+      toast.success("Event updated successfully!");
+      window.location.reload() // Use toast notification
     } catch (error) {
       console.error("Error editing event:", error.response?.data || error.message);
     }
@@ -129,10 +135,10 @@ const AllEvents = () => {
                         className="me-2"
                         onClick={() => handleEditEvent(event)}
                       >
-                       ✏️ Edit Event
+                        ✏️ Edit Event
                       </Button>
                       <Button variant="danger" size="sm" onClick={() => handleDeleteEvent(event._id)}>
-                      🗑️ Delete Event
+                        🗑️ Delete Event
                       </Button>
                     </div>
                   )}
@@ -146,14 +152,12 @@ const AllEvents = () => {
                   <strong>Time:</strong> {event.time}
                 </p>
                 <p className="text-secondary">
-                  <strong>Date:</strong> {event.date}
+                  <strong>Date:</strong> {new Date(event.date).toLocaleDateString()}
                 </p>
                 <p className="text-secondary">
                   <strong>Category:</strong> {event.category}
                 </p>
                 <p className="card-text text-dark"> <strong>Description:</strong> {event.description}</p>
-
-               
               </div>
             </div>
           );
@@ -193,6 +197,27 @@ const AllEvents = () => {
                   rows={3}
                   value={editingEvent.description}
                   onChange={(e) => setEditingEvent({ ...editingEvent, description: e.target.value })}
+                />
+              </Form.Group>
+
+              {/* Date Picker */}
+              <Form.Group controlId="editDate" className="mt-3">
+                <Form.Label>Date</Form.Label>
+                <DatePicker
+                  selected={new Date(editingEvent.date)}
+                  onChange={(date) => setEditingEvent({ ...editingEvent, date })}
+                  className="form-control"
+                  dateFormat="yyyy-MM-dd"
+                />
+              </Form.Group>
+
+              {/* Time Picker */}
+              <Form.Group controlId="editTime" className="mt-3">
+                <Form.Label>Time</Form.Label>
+                <Form.Control
+                  type="time"
+                  value={editingEvent.time}
+                  onChange={(e) => setEditingEvent({ ...editingEvent, time: e.target.value })}
                 />
               </Form.Group>
             </Form>
