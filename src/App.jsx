@@ -4,7 +4,7 @@ import Login from "./pages/Login"; // ✅ Import Login component
 import Signup from "./pages/Signup";
 import Home from "./pages/Home";
 import Account from "./pages/Account";
-import Events from "./pages/Events";
+import EventLists from "./pages/EventLists";
 import PostLists from "./pages/PostLists";
 
 function App() {
@@ -16,7 +16,7 @@ function App() {
         <Route path="/login" element={<Login />} /> {/* ✅ Add Login Route */}
         <Route path="/signup" element={<Signup />} />
         <Route path="/account" element={<Account />} />
-        <Route path="/events" element={<Events />} />
+        <Route path="/events/*" element={<EventLists />} />
         <Route path="/posts/*" element={<PostLists />} />
       </Routes>
     </Router>
