@@ -138,11 +138,20 @@ const AllEvents = () => {
                   )}
                 </div>
 
-                <p className="text-muted mb-2">👤 <strong>Posted by:</strong> {event.postedBy?.name}</p>
+                <p className="text-muted mb-2">👤 <strong>Created by:</strong> {event.createdBy?.name}</p>
                 <p className="text-secondary">
-                  <strong>Level:</strong> {event.level}
+                  <strong>Location:</strong> {event.location}
                 </p>
-                <p className="card-text text-dark">{event.description}</p>
+                <p className="text-secondary">
+                  <strong>Time:</strong> {event.time}
+                </p>
+                <p className="text-secondary">
+                  <strong>Date:</strong> {event.date}
+                </p>
+                <p className="text-secondary">
+                  <strong>Category:</strong> {event.category}
+                </p>
+                <p className="card-text text-dark"> <strong>Description:</strong> {event.description}</p>
 
                
               </div>
