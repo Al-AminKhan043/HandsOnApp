@@ -1,15 +1,17 @@
 import React, { useState } from "react";
-import { Button, Modal, Form } from "react-bootstrap";
+import { Button, Modal, Form, Alert } from "react-bootstrap";
 import axios from "axios";
+import { useSelector } from "react-redux";
+import NewComment from "./NewComment";
 
-const Comments = ({ post, isLoggedIn, user }) => {
+const Comments = ({ post }) => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [currentComment, setCurrentComment] = useState("");
   const [editingCommentId, setEditingCommentId] = useState(null);
+  const [error, setError] = useState(null);
+  const { token, user } = useSelector((state) => state.auth);
 
   const handleDeleteComment = async (commentId) => {
-    const token = localStorage.getItem("token");
-
     if (!token) {
       alert("Unauthorized: No token found!");
       return;
@@ -23,26 +25,22 @@ const Comments = ({ post, isLoggedIn, user }) => {
           },
         });
 
-        // Update the posts state to remove the deleted comment
-        // Use a callback function from parent to update posts or do it directly.
         alert("Comment deleted successfully!");
         window.location.reload();
       } catch (error) {
-        console.error("Error deleting comment:", error.response?.data || error.message);
+        setError(error.response?.data?.message || "Error deleting comment.");
       }
     }
   };
 
   const handleEditComment = async () => {
-    const token = localStorage.getItem("token");
-
     if (!token) {
       alert("Unauthorized: No token found!");
       return;
     }
 
     try {
-       await axios.put(
+      await axios.put(
         `http://localhost:5000/api/comments/${editingCommentId}`,
         { text: currentComment },
         {
@@ -52,29 +50,40 @@ const Comments = ({ post, isLoggedIn, user }) => {
         }
       );
 
-      // Update the posts state to reflect the updated comment
       alert("Comment updated successfully!");
       setShowEditModal(false);
-      window.location.reload()
+      window.location.reload();
     } catch (error) {
-      console.error("Error editing comment:", error.response?.data || error.message);
+      setError(error.response?.data?.message || "Error editing comment.");
     }
+  };
+
+  const handleCommentAdded = (newComment) => {
+    post.comments.push(newComment);
   };
 
   return (
     <div className="mt-3">
+      {error && <Alert variant="danger">{error}</Alert>}
+
       {post.comments.length > 0 && (
         <div>
           <h6 className="text-secondary">💬 Comments:</h6>
           <ul className="list-group">
             {post.comments.map((comment) => {
-              const isCommentOwner = isLoggedIn && (user?._id || user?.id) === comment.postedBy?._id;
+              const isCommentOwner =
+                user && (user._id || user.id) === comment.postedBy?._id;
 
               return (
-                <li key={comment._id} className="list-group-item bg-light border-0 rounded">
+                <li
+                  key={comment._id}
+                  className="list-group-item bg-light border-0 rounded"
+                >
                   <div className="d-flex justify-content-between align-items-center">
                     <div className="d-flex flex-column">
-                      <strong className="text-primary">{comment.postedBy.name}:</strong>
+                      <strong className="text-primary">
+                        {comment.postedBy.name}:
+                      </strong>
                       <span>{comment.text}</span>
                     </div>
                     {isCommentOwner && (
@@ -89,10 +98,14 @@ const Comments = ({ post, isLoggedIn, user }) => {
                             setShowEditModal(true);
                           }}
                         >
-                          Edit Comment
+                          Edit
                         </Button>
-                        <Button variant="outline-danger" size="sm" onClick={() => handleDeleteComment(comment._id)}>
-                          Delete Comment
+                        <Button
+                          variant="outline-danger"
+                          size="sm"
+                          onClick={() => handleDeleteComment(comment._id)}
+                        >
+                          Delete
                         </Button>
                       </div>
                     )}
@@ -103,6 +116,9 @@ const Comments = ({ post, isLoggedIn, user }) => {
           </ul>
         </div>
       )}
+
+      {/* Add new comment */}
+      <NewComment postId={post._id} onCommentAdded={handleCommentAdded} />
 
       {/* Modal for editing comment */}
       <Modal show={showEditModal} onHide={() => setShowEditModal(false)}>

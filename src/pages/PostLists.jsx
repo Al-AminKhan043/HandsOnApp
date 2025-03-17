@@ -2,8 +2,9 @@ import React from "react";
 import { Link,Route,Routes } from "react-router-dom";
 import AllPosts from "./allPosts";
 import NewPost from "./NewPost";
-
+import { useSelector } from "react-redux";
 const PostLists = () => {
+  const { isLoggedIn } = useSelector((state) => state.auth);
   return(
   <div>
     <nav className="navbar navbar-expand-lg bg-transparent">
@@ -13,7 +14,8 @@ const PostLists = () => {
             <Link to='/posts' className="nav-link fw-bold">All Posts</Link>
           </li>
           <li className="nav-item">
-            <Link to="newPost" className="nav-link fw-bold">Create Post</Link>
+            {isLoggedIn && <Link to="newPost" className="nav-link fw-bold">Create Post</Link>}
+            
           </li>
         </ul>
       </div>
@@ -21,7 +23,7 @@ const PostLists = () => {
 
     <Routes>
       <Route path="/" element={<AllPosts></AllPosts>}></Route>
-      <Route path="newPost" element={<NewPost></NewPost>}></Route>
+      {isLoggedIn && <Route path="newPost" element={<NewPost></NewPost>}></Route>} 
     </Routes>
     </div>
   )
