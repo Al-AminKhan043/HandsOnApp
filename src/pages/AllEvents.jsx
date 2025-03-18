@@ -118,6 +118,33 @@ const AllEvents = () => {
       console.error("Error editing event:", error.response?.data || error.message);
     }
   };
+  
+  const handleInterested= async(eventId)=>{
+    const token = localStorage.getItem("token");
+    if(!isLoggedIn){
+      toast.warning('Please log in to show interest in an event.')
+      return;
+    }
+    try{
+      await axios.post(`http://localhost:5000/api/events/${eventId}/User`,
+        {
+          userId: user._id
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
+      )
+      setEvents((prevEvents) =>
+        prevEvents.map((event) =>
+          event._id === eventId ? { ...event, interestedUsers: [...event.interestedUsers, user._id] } : event
+        )
+        
+      );
+      toast.success("Marked as interested!");
+    }
+    catch (error) {
+      console.error("Error marking interest:", error.response?.data || error.message);
+      toast.error("Failed to mark interest.");
+    }
+  }
 
   return (
     <div className="container mt-4">
@@ -150,7 +177,9 @@ const AllEvents = () => {
                       <Button variant="danger" size="sm" onClick={() => handleDeleteEvent(event._id)}>
                         🗑️ Delete Event
                       </Button>
+                      
                     </div>
+                    
                   )}
                 </div>
 
@@ -168,6 +197,13 @@ const AllEvents = () => {
                   <strong>Category:</strong> {event.category}
                 </p>
                 <p className="card-text text-dark"> <strong>Description:</strong> {event.description}</p>
+                <Button
+                variant={event.interestedUsers?.includes(user?._id) ? "secondary" : "success"}
+                onClick={() => handleInterested(event._id)}
+                disabled={event.interestedUsers?.includes(user?._id)}
+              >
+                {event.interestedUsers?.includes(user?._id) ? "✔ Interested" : "👍 Mark Interested"}
+              </Button>
               </div>
             </div>
           );
