@@ -10,7 +10,9 @@ const AllPosts = () => {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [showEditModal, setShowEditModal] = useState(false); // State to control modal visibility
-  const [editingPost, setEditingPost] = useState(null); // State to store the post being edited
+  const [editingPost, setEditingPost] = useState(null);
+  const [message, setMessage] = useState('');
+  const [messageType, setMessageType] = useState(''); // State to store the post being edited
 
   const { isLoggedIn, user } = useSelector((state) => state.auth);
 
@@ -43,9 +45,10 @@ const AllPosts = () => {
     const token = localStorage.getItem("token");
 
     if (!token) {
-      alert("Unauthorized: No token found!");
+      setMessageType('danger');
+      setMessage("Unauthorized: No token found!");
       return;
-    }
+  }
 
     if (window.confirm("Are you sure you want to delete this post?")) {
       try {
@@ -54,9 +57,12 @@ const AllPosts = () => {
         });
 
         setPosts(posts.filter((post) => post._id !== postId));
-        alert("Post deleted successfully!");
+        setMessageType('success');
+        setMessage("Event deleted successfully!");
       } catch (error) {
         console.error("Error deleting post:", error.response?.data || error.message);
+        setMessageType('danger');
+        setMessage("Failed to delete post. Please try again.");
       }
     }
   };
@@ -106,7 +112,17 @@ const AllPosts = () => {
   return (
     <div className="container mt-4">
       <h2 className="text-center mb-4">📢 All Posts</h2>
-
+      {
+    message && (
+        <div
+            className={`alert alert-${messageType}`}
+            role="alert"
+            onClick={() => setMessage('')} // Click event to clear the message
+        >
+            {message}
+        </div>
+    )
+}
       <InfiniteScroll
         dataLength={posts.length}
         next={fetchPosts}
