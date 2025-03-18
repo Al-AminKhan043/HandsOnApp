@@ -11,13 +11,15 @@ export default function Signup() {
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
+    const [validated, setValidated] = useState(false); // Track validation state
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setErrorMessage(""); // Clear previous errors
-        
+        setErrorMessage("");
+        setValidated(true); // Enable validation styles
+
         if (password !== confirmPassword) {
             setErrorMessage("Passwords don't match!");
             return;
@@ -28,22 +30,19 @@ export default function Signup() {
                 name,
                 email,
                 password,
-                confirmPassword // Remove confirmPassword from request
+                confirmPassword
+
             });
 
-            if (response.status === 201) { // Ensure successful registration
+            if (response.status === 201) {
                 const { token, user } = response.data;
-
-                // Store token and user in localStorage
-               
+                console.log("Received Token:", token);
 
                 localStorage.setItem("token", token);
                 localStorage.setItem("user", JSON.stringify(user));
 
-                // Dispatch login to update Redux state
                 dispatch(login({ token, user }));
-                
-                navigate("/"); // Redirect to homepage or dashboard
+                navigate("/");
             }
         } catch (err) {
             setErrorMessage(err.response?.data?.message || "Error signing up. Please try again.");
@@ -55,9 +54,9 @@ export default function Signup() {
         <Container className="d-flex justify-content-center align-items-center vh-100">
             <Card style={{ width: "400px", padding: "20px", boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)" }}>
                 <Card.Body>
-                    <h2 className="text-center">Sign Up</h2>
+                    <h2 className="text-center mb-3">Sign Up</h2>
                     {errorMessage && <Alert variant="danger">{errorMessage}</Alert>}
-                    <Form onSubmit={handleSubmit}>
+                    <Form noValidate validated={validated} onSubmit={handleSubmit}>
                         <Form.Group className="mb-3">
                             <Form.Label>Name</Form.Label>
                             <Form.Control
@@ -66,7 +65,11 @@ export default function Signup() {
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
                                 required
+                                isInvalid={validated && !name} // Show red border if invalid
                             />
+                            <Form.Control.Feedback type="invalid">
+                                Name is required.
+                            </Form.Control.Feedback>
                         </Form.Group>
 
                         <Form.Group className="mb-3">
@@ -77,7 +80,11 @@ export default function Signup() {
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 required
+                                isInvalid={validated && !email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)}
                             />
+                            <Form.Control.Feedback type="invalid">
+                                Please enter a valid email address.
+                            </Form.Control.Feedback>
                         </Form.Group>
 
                         <Form.Group className="mb-3">
@@ -88,7 +95,12 @@ export default function Signup() {
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 required
+                                minLength={8}
+                                isInvalid={validated && password.length < 8}
                             />
+                            <Form.Control.Feedback type="invalid">
+                                Password must be at least 8 characters.
+                            </Form.Control.Feedback>
                         </Form.Group>
 
                         <Form.Group className="mb-3">
@@ -99,7 +111,11 @@ export default function Signup() {
                                 value={confirmPassword}
                                 onChange={(e) => setConfirmPassword(e.target.value)}
                                 required
+                                isInvalid={validated && confirmPassword !== password}
                             />
+                            <Form.Control.Feedback type="invalid">
+                                Passwords must match.
+                            </Form.Control.Feedback>
                         </Form.Group>
 
                         <Button variant="primary" type="submit" className="w-100">
