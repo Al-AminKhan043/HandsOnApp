@@ -35,12 +35,14 @@ export default function Signup() {
                 const { token, user } = response.data;
 
                 // Store token and user in localStorage
+               
+
                 localStorage.setItem("token", token);
                 localStorage.setItem("user", JSON.stringify(user));
 
                 // Dispatch login to update Redux state
                 dispatch(login({ token, user }));
-
+                
                 navigate("/"); // Redirect to homepage or dashboard
             }
         } catch (err) {
