@@ -8,6 +8,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { format } from 'date-fns';
 
 const NewEvent = () => {
+  const [success,setSuccess]= useState(null);
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
   const { token } = useSelector((state) => state.auth);
   const [formData, setFormData] = useState({
@@ -50,6 +51,7 @@ const NewEvent = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setSuccess(null);
     if (!validateForm()) return;
 
     const formattedTime = format(new Date(`1970-01-01T${formData.time}:00`), 'hh:mm a');
@@ -66,7 +68,7 @@ const NewEvent = () => {
       const data = await response.json();
 
       if (response.ok) {
-        toast.success("Event created successfully!");
+        setSuccess('Post created successfully!');
         setFormData({ title: "", description: "", date: new Date(), time: "10:00", location: "", category: "" });
       } else {
         toast.error(data.message || "Error creating event.");
@@ -89,6 +91,15 @@ const NewEvent = () => {
     <Container className="my-4">
       <h2 className="mb-4">Create New Event</h2>
       <Form onSubmit={handleSubmit}>
+        {success && (
+                  <Alert
+                    variant="success"
+                    onClick={() => setSuccess(null)} // Clear success message on click
+                    style={{ cursor: 'pointer' }}  // Optional: Add a cursor pointer style to indicate it's clickable
+                  >
+                    {success}
+                  </Alert>
+                )}
         {Object.values(errors).map((error, index) => error && <Alert key={index} variant="danger">{error}</Alert>)}
 
         <Form.Group controlId="title" className="mb-3">
