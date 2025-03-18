@@ -323,7 +323,7 @@ return (
                 <strong>Category:</strong> {event.category}
               </p>
               <p className="card-text text-dark"><strong>Description:</strong> {event.description}</p>
-              <div style={{ display: "flex", gap: "10px" }}>
+              {isLoggedIn && <div style={{ display: "flex", gap: "10px" }}>
                 <Button variant="success" onClick={() => handleInterested(event._id)} disabled={isPastEvent}>
                   👍 Mark Interested
                 </Button>
@@ -336,7 +336,8 @@ return (
                 >
                   🧐 View Interested Users
                 </Button>
-              </div>
+              </div>}
+              
             </div>
           </div>
         );
