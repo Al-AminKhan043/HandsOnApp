@@ -14,6 +14,8 @@ const AllEvents = () => {
   const [hasMore, setHasMore] = useState(true);
   const [showEditModal, setShowEditModal] = useState(false);
   const [editingEvent, setEditingEvent] = useState(null);
+  const [showInterestedModal, setShowInterestedModal] = useState(false);
+  const [interestedUsers, setInterestedUsers] = useState([]);
 
   const { isLoggedIn, user } = useSelector((state) => state.auth);
   
@@ -215,7 +217,39 @@ const handleRemoveInterest = async (eventId) => {
     }
 };
 
-  
+
+
+const handleShowInterested = async (eventId) => {
+  try {
+    // Get the token from localStorage (or wherever you store the token)
+    const token = localStorage.getItem('token'); // Replace with the actual way you store the token
+
+    if (!token) {
+      console.error("No token found");
+      return;
+    }
+
+    // Set the Bearer token in the request headers
+    
+    // Make a GET request to fetch event by ID using axios and include the Bearer token in headers
+    const response = await axios.get(`http://localhost:5000/api/events/${eventId}`, 
+      {
+        headers: { Authorization: `Bearer ${token}` }
+      }
+    );
+
+    if (response.status === 200) {
+      const event = response.data;
+      setInterestedUsers(event.interestedUsers); // Set the interested users from the fetched event
+      setShowInterestedModal(true); // Show the modal
+    } else {
+      console.error("Error fetching event:", response.data.message);
+    }
+  } catch (error) {
+    console.error("Error:", error);
+  }
+};
+
 
 return (
   <div className="container mt-4">
@@ -251,6 +285,7 @@ return (
                     <Button variant="danger" size="sm" onClick={() => handleDeleteEvent(event._id)}>
                       🗑️ Delete Event
                     </Button>
+                    
                   </div>
                 )}
               </div>
@@ -276,13 +311,39 @@ return (
                 <Button variant="danger" onClick={() => handleRemoveInterest(event._id)}>
                   ❌ Remove Interest
                 </Button>
+                <Button
+                  variant="info"
+                  onClick={() => handleShowInterested(event._id)}
+                >
+                  🧐 View Interested Users
+                </Button>
               </div>
             </div>
           </div>
         );
       })}
     </InfiniteScroll>
-
+    <Modal show={showInterestedModal} onHide={() => setShowInterestedModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Users Interested in This Event</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <ul>
+            {interestedUsers.length > 0 ? (
+              interestedUsers.map((user, index) => (
+                <li key={index}>{user.name}</li>
+              ))
+            ) : (
+              <li>No users have shown interest yet.</li>
+            )}
+          </ul>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowInterestedModal(false)}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
     {/* Edit Event Modal */}
     {editingEvent && (
       <Modal show={showEditModal} onHide={() => setShowEditModal(false)}>
