@@ -124,7 +124,7 @@ const AllEvents = () => {
       });
 
       setShowEditModal(false); // Close the modal
-      toast.success("Event updated successfully!");
+      alert("Event updated successfully!");
       window.location.reload() // Use toast notification
     } catch (error) {
       console.error("Error editing event:", error.response?.data || error.message);
