@@ -9,13 +9,25 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [validated, setValidated] = useState(false); // Track validation state
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setError(""); // Clear previous errors
-  
+    setValidated(true); // Enable validation styles
+
+    if (!email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+
+    if (password.length < 6) {
+      setError("Password must be at least 8 characters.");
+      return;
+    }
+
     try {
       const response = await axios.post(
         "http://localhost:5000/api/users/login",
@@ -47,7 +59,7 @@ const Login = () => {
         <Card.Body>
           <h2 className="text-center">Login</h2>
           {error && <Alert variant="danger">{error}</Alert>}
-          <Form onSubmit={handleLogin}>
+          <Form noValidate validated={validated} onSubmit={handleLogin}>
             <Form.Group className="mb-3">
               <Form.Label>Email</Form.Label>
               <Form.Control
@@ -56,7 +68,11 @@ const Login = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
+                isInvalid={validated && !email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)}
               />
+              <Form.Control.Feedback type="invalid">
+                Please enter a valid email.
+              </Form.Control.Feedback>
             </Form.Group>
 
             <Form.Group className="mb-3">
@@ -67,7 +83,12 @@ const Login = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                minLength={8}
+                isInvalid={validated && password.length < 8}
               />
+              <Form.Control.Feedback type="invalid">
+                Password must be at least 8 characters.
+              </Form.Control.Feedback>
             </Form.Group>
 
             <Button variant="primary" type="submit" className="w-100">
