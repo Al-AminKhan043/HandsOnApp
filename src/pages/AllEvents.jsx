@@ -16,7 +16,8 @@ const AllEvents = () => {
   const [editingEvent, setEditingEvent] = useState(null);
   const [showInterestedModal, setShowInterestedModal] = useState(false);
   const [interestedUsers, setInterestedUsers] = useState([]);
-
+  const [message, setMessage] = useState('');
+  const [messageType, setMessageType] = useState('');
   const { isLoggedIn, user } = useSelector((state) => state.auth);
   
 
@@ -53,27 +54,35 @@ const AllEvents = () => {
   }, [fetchEvents]);
   
 
+ 
+
   const handleDeleteEvent = async (eventId) => {
     const token = localStorage.getItem("token");
+    
 
     if (!token) {
-      alert("Unauthorized: No token found!");
-      return;
+        setMessageType('danger');
+        setMessage("Unauthorized: No token found!");
+        return;
     }
 
     if (window.confirm("Are you sure you want to delete this event?")) {
-      try {
-        await axios.delete(`http://localhost:5000/api/events/${eventId}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        try {
+            await axios.delete(`http://localhost:5000/api/events/${eventId}`, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
 
-        setEvents(events.filter((event) => event._id !== eventId));
-        alert("Event deleted successfully!");
-      } catch (error) {
-        console.error("Error deleting event:", error.response?.data || error.message);
-      }
+            setEvents(events.filter((event) => event._id !== eventId));
+            setMessageType('success');
+            setMessage("Event deleted successfully!");
+        } catch (error) {
+            console.error("Error deleting event:", error.response?.data || error.message);
+            setMessageType('danger');
+            setMessage("Failed to delete event. Please try again.");
+        }
     }
-  };
+};
+
   
 
 
@@ -254,7 +263,17 @@ const handleShowInterested = async (eventId) => {
 return (
   <div className="container mt-4">
     <h2 className="text-center mb-4">📅 All Events</h2>
-
+    {
+    message && (
+        <div
+            className={`alert alert-${messageType}`}
+            role="alert"
+            onClick={() => setMessage('')} // Click event to clear the message
+        >
+            {message}
+        </div>
+    )
+}
     <InfiniteScroll
       dataLength={events.length}
       next={fetchEvents}
