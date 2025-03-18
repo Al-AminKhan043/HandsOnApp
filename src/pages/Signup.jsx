@@ -17,7 +17,7 @@ export default function Signup() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setErrorMessage(""); // Clear previous errors
-
+        
         if (password !== confirmPassword) {
             setErrorMessage("Passwords don't match!");
             return;
@@ -27,7 +27,8 @@ export default function Signup() {
             const response = await axios.post("http://localhost:5000/api/users/signup", {
                 name,
                 email,
-                password, // Remove confirmPassword from request
+                password,
+                confirmPassword // Remove confirmPassword from request
             });
 
             if (response.status === 201) { // Ensure successful registration
