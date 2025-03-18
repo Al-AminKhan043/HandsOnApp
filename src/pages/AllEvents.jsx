@@ -16,6 +16,7 @@ const AllEvents = () => {
   const [editingEvent, setEditingEvent] = useState(null);
 
   const { isLoggedIn, user } = useSelector((state) => state.auth);
+  
 
   const fetchEvents = useCallback(async () => {
     try {
@@ -119,179 +120,250 @@ const AllEvents = () => {
     }
   };
   
-  const handleInterested= async(eventId)=>{
+  const handleInterested = async (eventId) => {
     const token = localStorage.getItem("token");
-    if(!isLoggedIn){
-      toast.warning('Please log in to show interest in an event.')
+    console.log("add interest clicked for event:", eventId);
+    console.log("Currently logged-in user ID:", user?.id); // ✅ Use `id` instead of `_id`
+    if (!isLoggedIn) {
+      toast.warning("Please log in to show interest in an event.");
       return;
     }
-    try{
-      await axios.post(`http://localhost:5000/api/events/${eventId}/User`,
+  
+    try {
+      // Proceed to mark the user as interested
+      const response = await axios.post(
+        `http://localhost:5000/api/events/${eventId}/user`,
         {
-          userId: user._id
+          userId: user._id,
         },
         { headers: { Authorization: `Bearer ${token}` } }
-      )
+      );
+  
+      // If the backend responds that the user is already in the list, show a popup
+      if (response.data.message === "User is already interested in this event") {
+        alert("You are already in the interested list.");
+        return;
+      }
+  
+      // Update the state to reflect the change
       setEvents((prevEvents) =>
         prevEvents.map((event) =>
-          event._id === eventId ? { ...event, interestedUsers: [...event.interestedUsers, user._id] } : event
+          event._id === eventId
+            ? {
+                ...event,
+                interestedUsers: [...event.interestedUsers, user._id],
+              }
+            : event
         )
-        
       );
+  
       toast.success("Marked as interested!");
-    }
-    catch (error) {
+    } catch (error) {
+      // Log detailed error message
       console.error("Error marking interest:", error.response?.data || error.message);
-      toast.error("Failed to mark interest.");
+  
+      // Check for specific error message from backend and show appropriate message
+      if (error.response?.data?.message === "User is already interested in this event") {
+        console.log("User is already interested in this event."); // Log info
+        alert("You are already in the interested list.");
+      } else {
+        console.error("Error marking interest:", error.response?.data || error.message);
+        toast.error("Failed to mark interest.");
+      }
     }
-  }
+  };
+  
 
-  return (
-    <div className="container mt-4">
-      <h2 className="text-center mb-4">📅 All Events</h2>
+const handleRemoveInterest = async (eventId) => {
+    console.log("Remove interest clicked for event:", eventId);
+    console.log("Currently logged-in user ID:", user?.id); // ✅ Use `id` instead of `_id`
 
-      <InfiniteScroll
-        dataLength={events.length}
-        next={fetchEvents}
-        hasMore={hasMore}
-        loader={<h4 className="text-center">Loading more events...</h4>}
-      >
-        {events.map((event) => {
-          const isEventOwner = isLoggedIn && (user?._id || user?.id) === event.createdBy?._id;
+    if (!isLoggedIn) {
+        toast.warning("Please log in to remove interest.");
+        return;
+    }
 
-          return (
-            <div key={event._id} className="card mb-4 shadow-sm border-0 rounded-3" style={{ backgroundColor: "#f8f9fa" }}>
-              <div className="card-body p-4">
-                <div className="d-flex justify-content-between align-items-center">
-                  <h4 className="card-title text-primary fw-bold">{event.title}</h4>
-                  {isEventOwner && (
-                    <div className="d-flex">
-                      <Button
-                        variant="warning"
-                        size="sm"
-                        className="me-2"
-                        onClick={() => handleEditEvent(event)}
-                      >
-                        ✏️ Edit Event
-                      </Button>
-                      <Button variant="danger" size="sm" onClick={() => handleDeleteEvent(event._id)}>
-                        🗑️ Delete Event
-                      </Button>
-                      
-                    </div>
-                    
-                  )}
-                </div>
+    try {
+        const token = localStorage.getItem("token");
 
-                <p className="text-muted mb-2">👤 <strong>Created by:</strong> {event.createdBy?.name}</p>
-                <p className="text-secondary">
-                  <strong>Location:</strong> {event.location}
-                </p>
-                <p className="text-secondary">
-                  <strong>Time:</strong> {event.time}
-                </p>
-                <p className="text-secondary">
-                  <strong>Date:</strong> {new Date(event.date).toLocaleDateString()}
-                </p>
-                <p className="text-secondary">
-                  <strong>Category:</strong> {event.category}
-                </p>
-                <p className="card-text text-dark"> <strong>Description:</strong> {event.description}</p>
-                <Button
-                variant={event.interestedUsers?.includes(user?._id) ? "secondary" : "success"}
-                onClick={() => handleInterested(event._id)}
-                disabled={event.interestedUsers?.includes(user?._id)}
-              >
-                {event.interestedUsers?.includes(user?._id) ? "✔ Interested" : "👍 Mark Interested"}
-              </Button>
+        await axios.delete(`http://localhost:5000/api/events/${eventId}/user`, {
+            headers: { Authorization: `Bearer ${token}` },
+            data: { userId: user.id }, // ✅ Use `user.id` instead of `user._id`
+        });
+
+        // ✅ Update state properly
+        setEvents((prevEvents) =>
+            prevEvents.map((event) =>
+                event._id === eventId
+                    ? { 
+                        ...event, 
+                        interestedUsers: event.interestedUsers.filter((id) => id !== user.id) 
+                      }
+                    : event
+            )
+        );
+
+        toast.info("Interest removed.");
+    } catch (error) {
+      if (error.response?.data?.message === "User is not in the interested users list") {
+        console.log("User is not in the interested list.");
+        alert("You are not in the interested list.");
+      } else {
+        console.error("Error removing interest:", error.response?.data || error.message);
+        toast.error("Failed to remove interest.");
+      }
+    }
+};
+
+  
+
+return (
+  <div className="container mt-4">
+    <h2 className="text-center mb-4">📅 All Events</h2>
+
+    <InfiniteScroll
+      dataLength={events.length}
+      next={fetchEvents}
+      hasMore={hasMore}
+      loader={<h4 className="text-center">Loading more events...</h4>}
+    >
+      {events.map((event) => {
+        const isEventOwner = isLoggedIn && (user?._id || user?.id) === event.createdBy?._id;
+        const eventDateTime = new Date(event.date); // Convert the ISO string into a Date object
+        const currentDateTime = new Date(); 
+
+        const isPastEvent = currentDateTime > eventDateTime; 
+        return (
+          <div key={event._id} className="card mb-4 shadow-sm border-0 rounded-3" style={{ backgroundColor: "#f8f9fa" }}>
+            <div className="card-body p-4">
+              <div className="d-flex justify-content-between align-items-center">
+                <h4 className="card-title text-primary fw-bold">{event.title}</h4>
+                {isEventOwner && (
+                  <div className="d-flex">
+                    <Button
+                      variant="warning"
+                      size="sm"
+                      className="me-2"
+                      onClick={() => handleEditEvent(event)}
+                    >
+                      ✏️ Edit Event
+                    </Button>
+                    <Button variant="danger" size="sm" onClick={() => handleDeleteEvent(event._id)}>
+                      🗑️ Delete Event
+                    </Button>
+                  </div>
+                )}
+              </div>
+
+              <p className="text-muted mb-2">👤 <strong>Created by:</strong> {event.createdBy?.name}</p>
+              <p className="text-secondary">
+                <strong>Location:</strong> {event.location}
+              </p>
+              <p className="text-secondary">
+                <strong>Time:</strong> {event.time}
+              </p>
+              <p className="text-secondary">
+                <strong>Date:</strong> {new Date(event.date).toLocaleDateString()}
+              </p>
+              <p className="text-secondary">
+                <strong>Category:</strong> {event.category}
+              </p>
+              <p className="card-text text-dark"><strong>Description:</strong> {event.description}</p>
+              <div style={{ display: "flex", gap: "10px" }}>
+                <Button variant="success" onClick={() => handleInterested(event._id)} disabled={isPastEvent}>
+                  👍 Mark Interested
+                </Button>
+                <Button variant="danger" onClick={() => handleRemoveInterest(event._id)}>
+                  ❌ Remove Interest
+                </Button>
               </div>
             </div>
-          );
-        })}
-      </InfiniteScroll>
+          </div>
+        );
+      })}
+    </InfiniteScroll>
 
-      {/* Edit Event Modal */}
-      {/* Edit Event Modal */}
-{editingEvent && (
-  <Modal show={showEditModal} onHide={() => setShowEditModal(false)}>
-    <Modal.Header closeButton>
-      <Modal.Title>Edit Event</Modal.Title>
-    </Modal.Header>
-    <Modal.Body>
-      <Form>
-        <Form.Group controlId="editTitle">
-          <Form.Label>Title</Form.Label>
-          <Form.Control
-            type="text"
-            value={editingEvent.title}
-            onChange={(e) => setEditingEvent({ ...editingEvent, title: e.target.value })}
-          />
-        </Form.Group>
+    {/* Edit Event Modal */}
+    {editingEvent && (
+      <Modal show={showEditModal} onHide={() => setShowEditModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Edit Event</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            <Form.Group controlId="editTitle">
+              <Form.Label>Title</Form.Label>
+              <Form.Control
+                type="text"
+                value={editingEvent.title}
+                onChange={(e) => setEditingEvent({ ...editingEvent, title: e.target.value })}
+              />
+            </Form.Group>
 
-        <Form.Group controlId="editLocation" className="mt-3">
-          <Form.Label>Location</Form.Label>
-          <Form.Control
-            type="text"
-            value={editingEvent.location}
-            onChange={(e) => setEditingEvent({ ...editingEvent, location: e.target.value })}
-          />
-        </Form.Group>
+            <Form.Group controlId="editLocation" className="mt-3">
+              <Form.Label>Location</Form.Label>
+              <Form.Control
+                type="text"
+                value={editingEvent.location}
+                onChange={(e) => setEditingEvent({ ...editingEvent, location: e.target.value })}
+              />
+            </Form.Group>
 
-        <Form.Group controlId="editDescription" className="mt-3">
-          <Form.Label>Description</Form.Label>
-          <Form.Control
-            as="textarea"
-            rows={3}
-            value={editingEvent.description}
-            onChange={(e) => setEditingEvent({ ...editingEvent, description: e.target.value })}
-          />
-        </Form.Group>
+            <Form.Group controlId="editDescription" className="mt-3">
+              <Form.Label>Description</Form.Label>
+              <Form.Control
+                as="textarea"
+                rows={3}
+                value={editingEvent.description}
+                onChange={(e) => setEditingEvent({ ...editingEvent, description: e.target.value })}
+              />
+            </Form.Group>
 
-        {/* Date Picker */}
-        <Form.Group controlId="editDate" className="mt-3">
-          <Form.Label>Date</Form.Label>
-          <DatePicker
-            selected={new Date(editingEvent.date)}
-            onChange={(date) => setEditingEvent({ ...editingEvent, date })}
-            className="form-control"
-            dateFormat="yyyy-MM-dd"
-          />
-        </Form.Group>
+            {/* Date Picker */}
+            <Form.Group controlId="editDate" className="mt-3">
+              <Form.Label>Date</Form.Label>
+              <DatePicker
+                selected={new Date(editingEvent.date)}
+                onChange={(date) => setEditingEvent({ ...editingEvent, date })}
+                className="form-control"
+                dateFormat="yyyy-MM-dd"
+              />
+            </Form.Group>
 
-        {/* Time Picker */}
-        <Form.Group controlId="editTime" className="mt-3">
-          <Form.Label>Time</Form.Label>
-          <Form.Control
-            type="time"
-            value={editingEvent.time}
-            onChange={(e) => setEditingEvent({ ...editingEvent, time: e.target.value })}
-          />
-        </Form.Group>
+            {/* Time Picker */}
+            <Form.Group controlId="editTime" className="mt-3">
+              <Form.Label>Time</Form.Label>
+              <Form.Control
+                type="time"
+                value={editingEvent.time}
+                onChange={(e) => setEditingEvent({ ...editingEvent, time: e.target.value })}
+              />
+            </Form.Group>
 
-        {/* Category Field */}
-        <Form.Group controlId="editCategory" className="mt-3">
-          <Form.Label>Category</Form.Label>
-          <Form.Control
-            type="text"
-            value={editingEvent.category}
-            onChange={(e) => setEditingEvent({ ...editingEvent, category: e.target.value })}
-          />
-        </Form.Group>
-      </Form>
-    </Modal.Body>
-    <Modal.Footer>
-      <Button variant="secondary" onClick={() => setShowEditModal(false)}>
-        Close
-      </Button>
-      <Button variant="primary" onClick={handleSaveEdit}>
-        Save Changes
-      </Button>
-    </Modal.Footer>
-  </Modal>
-)}
+            {/* Category Field */}
+            <Form.Group controlId="editCategory" className="mt-3">
+              <Form.Label>Category</Form.Label>
+              <Form.Control
+                type="text"
+                value={editingEvent.category}
+                onChange={(e) => setEditingEvent({ ...editingEvent, category: e.target.value })}
+              />
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowEditModal(false)}>
+            Close
+          </Button>
+          <Button variant="primary" onClick={handleSaveEdit}>
+            Save Changes
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    )}
+  </div>
+);
 
-    </div>
-  );
 };
 
 export default AllEvents;
