@@ -43,7 +43,15 @@ export default function NewPost(){
         <div className="container mt-4">
       <h2>Create a Post</h2>
       {error && <Alert variant="danger">{error}</Alert>}
-      {success && <Alert variant="success">{success}</Alert>}
+      {success && (
+          <Alert
+            variant="success"
+            onClick={() => setSuccess(null)} // Clear success message on click
+            style={{ cursor: 'pointer' }}  // Optional: Add a cursor pointer style to indicate it's clickable
+          >
+            {success}
+          </Alert>
+        )}
 
       <Form onSubmit={handleSubmit}>
         <Form.Group className="mb-3">
