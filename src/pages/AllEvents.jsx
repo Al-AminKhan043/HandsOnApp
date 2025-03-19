@@ -176,7 +176,7 @@ const AllEvents = () => {
       // Check for specific error message from backend and show appropriate message
       if (error.response?.data?.message === "User is already interested in this event") {
         console.log("User is already interested in this event."); // Log info
-        alert("You are already in the interested list.");
+        toast.info("You are already in the interested list.");
       } else {
         console.error("Error marking interest:", error.response?.data || error.message);
         toast.error("Failed to mark interest.");
@@ -218,7 +218,7 @@ const handleRemoveInterest = async (eventId) => {
     } catch (error) {
       if (error.response?.data?.message === "User is not in the interested users list") {
         console.log("User is not in the interested list.");
-        alert("You are not in the interested list.");
+        toast.info("You are not in the interested list.");
       } else {
         console.error("Error removing interest:", error.response?.data || error.message);
         toast.error("Failed to remove interest.");
@@ -260,6 +260,19 @@ const handleShowInterested = async (eventId) => {
 };
 
 
+const getCurrentDateMinusOneDayInBST = () => {
+  const currentDate = new Date();
+  
+  // Subtract one day
+  currentDate.setDate(currentDate.getDate() );
+  
+  // Adjust to Bangladesh Standard Time (UTC+6)
+  currentDate.setHours(currentDate.getHours() + 6);
+
+  // Format to ISO 8601 (including the date part, but keep the same format)
+  return currentDate.toISOString();
+};
+
 return (
   <div className="container mt-4">
     <h2 className="text-center mb-4">📅 All Events</h2>
@@ -282,10 +295,18 @@ return (
     >
       {events.map((event) => {
         const isEventOwner = isLoggedIn && (user?._id || user?.id) === event.createdBy?._id;
-        const eventDateTime = new Date(event.date); // Convert the ISO string into a Date object
-        const currentDateTime = new Date(); 
+         
+        const eventDateTime= (event.date);
+         const currentDateTime = getCurrentDateMinusOneDayInBST();
+         console.log(event.title)
+        console.log('current date-1 day', currentDateTime.split('T')[0]);
+        console.log('event datetime', eventDateTime.split('T')[0]);
 
-        const isPastEvent = currentDateTime > eventDateTime; 
+        // Compare current date minus one day with the event date (without time)
+        const isPastEvent = currentDateTime.split('T')[0] >= eventDateTime.split('T')[0];
+
+        console.log(isPastEvent);
+
         return (
           <div key={event._id} className="card mb-4 shadow-sm border-0 rounded-3" style={{ backgroundColor: "#f8f9fa" }}>
             <div className="card-body p-4">
