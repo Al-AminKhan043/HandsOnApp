@@ -57,7 +57,7 @@ const NewEvent = () => {
     const formattedTime = format(new Date(`1970-01-01T${formData.time}:00`), 'hh:mm a');
 
     try {
-      const response = await fetch(`http://localhost:5000/api/events/new`, {
+      const response = await fetch(`https://handson-backend-ix8y.onrender.com/api/events/new`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,

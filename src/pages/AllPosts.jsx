@@ -18,7 +18,7 @@ const AllPosts = () => {
 
   const fetchPosts = useCallback(async () => {
     try {
-      const res = await axios.get(`http://localhost:5000/api/posts?page=${page}&limit=5`);
+      const res = await axios.get(`https://handson-backend-ix8y.onrender.com/api/posts?page=${page}&limit=5`);
 
       if (res.data.posts.length > 0) {
         setPosts((prevPosts) => {
@@ -52,7 +52,7 @@ const AllPosts = () => {
 
     if (window.confirm("Are you sure you want to delete this post?")) {
       try {
-        await axios.delete(`http://localhost:5000/api/posts/${postId}`, {
+        await axios.delete(`https://handson-backend-ix8y.onrender.com/api/posts/${postId}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -82,7 +82,7 @@ const AllPosts = () => {
 
     try {
       const res = await axios.put(
-        `http://localhost:5000/api/posts/${editingPost._id}/edit`,
+        `https://handson-backend-ix8y.onrender.com/api/posts/${editingPost._id}/edit`,
         {
           title: editingPost.title,
           level: editingPost.level,

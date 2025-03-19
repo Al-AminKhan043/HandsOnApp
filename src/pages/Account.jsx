@@ -25,7 +25,7 @@ const Account = () => {
       const fetchUserData = async () => {
         try {
           const response = await axios.get(
-            `http://localhost:5000/api/users/${user.id}`,
+            `https://handson-backend-ix8y.onrender.com/api/users/${user.id}`,
             {
               headers: { Authorization: `Bearer ${token}` },
             }
@@ -55,7 +55,7 @@ const Account = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.put(
-        `http://localhost:5000/api/users/${userInfo._id}/edit`,
+        `https://handson-backend-ix8y.onrender.com/api/users/${userInfo._id}/edit`,
         updatedData,
         { headers: { Authorization: `Bearer ${token}` } }
       );

@@ -6,8 +6,8 @@ const storedToken = localStorage.getItem("token");
 
 // Initial state
 const initialState = {
-  isLoggedIn: !!storedToken, // True if a token exists
-  user: storedUser || null, // Load user from localStorage if available
+  isLoggedIn: !!storedToken, 
+  user: storedUser || null, 
   token: storedToken || null,
 };
 
@@ -38,8 +38,8 @@ const authSlice = createSlice({
   },
 });
 
-// Export the actions from the slice
+
 export const { login, logout } = authSlice.actions;
 
-// Export the reducer to be included in the store
+
 export default authSlice.reducer;

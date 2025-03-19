@@ -21,7 +21,7 @@ export default function NewComment({postId,onCommentAdded}){
         return;
        }
        try{
-        const response =await axios.post(`http://localhost:5000/api/comments/${postId}`,
+        const response =await axios.post(`https://handson-backend-ix8y.onrender.com/api/comments/${postId}`,
             {text},
             {headers:{
                 Authorization: `Bearer ${token}`

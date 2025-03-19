@@ -86,7 +86,7 @@ Ensure you have installed:
     ```
 
 ## API Documentation
-- Check Full API Documentation: [Postman Collection](https://link-to-your-postman-collection)
+- Check Full API Documentation: [Postman Collection](https://documenter.getpostman.com/view/39944898/2sAYkEqztp)
 
 ## Database Schema
 
@@ -132,10 +132,10 @@ Ensure you have installed:
 
 - **Backend:** Render
     - Backend Repository: [GitHub Backend Repo](https://github.com/Al-AminKhan043/handsOn-backend)
-    - Live API URL: [https://handson-backend.onrender.com/](https://handson-backend.onrender.com/)
+    - Live API URL: [https://handson-backend.onrender.com/](https://handson-backend-ix8y.onrender.com)
 
 - **Frontend:** Vercel
-    - Frontend Repository: [GitHub Frontend Repo](https://github.com/yourusername/handsOn-frontend)
+    - Frontend Repository: [GitHub Frontend Repo](https://github.com/Al-AminKhan043/HandsOnApp)
     - Live Site: [https://handson-frontend.vercel.app/](https://handson-frontend.vercel.app/)
 
 

@@ -22,7 +22,7 @@ const Navigation = () => {
 
   const handleLogout = async () => {
     try {
-      await axios.post("http://localhost:5000/api/users/logout", {}, { withCredentials: true });
+      await axios.post("https://handson-backend-ix8y.onrender.com/api/users/logout", {}, { withCredentials: true });
       dispatch(logout()); 
       localStorage.removeItem("token"); 
       localStorage.removeItem("user");  
