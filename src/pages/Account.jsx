@@ -33,8 +33,8 @@ const Account = () => {
           setUserInfo(response.data);
           setSkills(response.data.skills || []);
           setCauses(response.data.causes || []);
-          setName(response.data.name || "");  // Set the initial name
-          setEmail(response.data.email || ""); // Set the initial email
+          setName(response.data.name || "");  
+          setEmail(response.data.email || ""); 
         } catch (err) {
           setError("Error fetching user profile");
           console.error("Error fetching user profile:", err);
@@ -43,7 +43,7 @@ const Account = () => {
 
       fetchUserData();
     } else {
-      navigate("/login"); // Redirect if not logged in
+      navigate("/login");
     }
   }, [isLoggedIn, user, navigate]);
 
@@ -60,7 +60,7 @@ const Account = () => {
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setUserInfo(response.data.user);
-      setError(""); // Clear any error messages
+      setError(""); 
       alert("Profile updated successfully");
     } catch (err) {
       setError("Error updating profile");
@@ -74,7 +74,7 @@ const Account = () => {
         <Card.Body>
           <h2 className="text-center">Account Page</h2>
           
-          {/* Show the form only if the user is logged in */}
+         
           {isLoggedIn ? (
             <>
               {error && <Alert variant="danger">{error}</Alert>}
@@ -86,7 +86,7 @@ const Account = () => {
                     <Form.Control
                       type="text"
                       value={name}
-                      onChange={(e) => setName(e.target.value)}  // Make name editable
+                      onChange={(e) => setName(e.target.value)}  
                     />
                   </Form.Group>
 
@@ -95,7 +95,7 @@ const Account = () => {
                     <Form.Control
                       type="email"
                       value={email}
-                      onChange={(e) => setEmail(e.target.value)} // Make email editable
+                      onChange={(e) => setEmail(e.target.value)} 
                     />
                   </Form.Group>
 

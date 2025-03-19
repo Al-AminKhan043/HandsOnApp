@@ -9,14 +9,14 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [validated, setValidated] = useState(false); // Track validation state
+  const [validated, setValidated] = useState(false); 
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setError(""); // Clear previous errors
-    setValidated(true); // Enable validation styles
+    setError(""); 
+    setValidated(true); 
 
     if (!email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
       setError("Please enter a valid email address.");
@@ -36,16 +36,15 @@ const Login = () => {
       );
 
       if (response.status === 200) {
-        const { token, user } = response.data; // Extract token and user data
+        const { token, user } = response.data; 
 
-        // Store user and token in localStorage
         localStorage.setItem("token", token);
         localStorage.setItem("user", JSON.stringify(user));
 
         // Dispatch login action with user and token
         dispatch(login({ user, token }));
-
-        navigate("/"); // Redirect to homepage or dashboard
+       
+        navigate("/"); 
       }
     } catch (err) {
       setError(err.response?.data?.message || "Invalid email or password");

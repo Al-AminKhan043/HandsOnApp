@@ -7,7 +7,8 @@ import { Navbar, Nav, Button, Container } from "react-bootstrap";
 
 const Navigation = () => {
   const dispatch = useDispatch();
-  const { isLoggedIn, user } = useSelector((state) => state.auth); // Extract user and login state
+  // Extract user and login state
+  const { isLoggedIn, user } = useSelector((state) => state.auth); 
 
   // Check for token and user data in localStorage on initial load
   useEffect(() => {
@@ -22,9 +23,9 @@ const Navigation = () => {
   const handleLogout = async () => {
     try {
       await axios.post("http://localhost:5000/api/users/logout", {}, { withCredentials: true });
-      dispatch(logout()); // Dispatch logout action
-      localStorage.removeItem("token"); // Remove token from localStorage
-      localStorage.removeItem("user");  // Remove user data from localStorage
+      dispatch(logout()); 
+      localStorage.removeItem("token"); 
+      localStorage.removeItem("user");  
     } catch (err) {
       console.error("Logout failed:", err);
     }

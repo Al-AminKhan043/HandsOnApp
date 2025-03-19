@@ -10,7 +10,7 @@ const PostLists = () => {
   <div>
     <nav className="navbar navbar-expand-lg bg-transparent">
       <div className="container d-flex justify-content-center">
-        <ul className="navbar-nav gap-4"> {/* Added gap-4 for spacing */}
+        <ul className="navbar-nav gap-4"> 
           <li className="nav-item">
             <Link to='/posts' className="nav-link fw-bold">All Posts</Link>
           </li>

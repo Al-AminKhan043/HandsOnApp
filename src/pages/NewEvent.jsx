@@ -94,8 +94,8 @@ const NewEvent = () => {
         {success && (
                   <Alert
                     variant="success"
-                    onClick={() => setSuccess(null)} // Clear success message on click
-                    style={{ cursor: 'pointer' }}  // Optional: Add a cursor pointer style to indicate it's clickable
+                    onClick={() => setSuccess(null)} 
+                    style={{ cursor: 'pointer' }}  
                   >
                     {success}
                   </Alert>

@@ -1,7 +1,6 @@
-// LogoutButton.jsx
 import React from 'react';
-import { useDispatch } from 'react-redux'; // Import the necessary hooks
-import { logout } from '../utils/authSlice'; // Import the logout action
+import { useDispatch } from 'react-redux'; 
+import { logout } from '../utils/authSlice'; 
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 

@@ -3,7 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { login } from "../utils/authSlice";
-import { Form, Button, Container, Alert, Card } from "react-bootstrap"; // Bootstrap Components
+import { Form, Button, Container, Alert, Card } from "react-bootstrap"; 
 
 export default function Signup() {
     const [name, setName] = useState("");
@@ -11,14 +11,14 @@ export default function Signup() {
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
-    const [validated, setValidated] = useState(false); // Track validation state
+    const [validated, setValidated] = useState(false); 
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setErrorMessage("");
-        setValidated(true); // Enable validation styles
+        setValidated(true); 
 
         if (password !== confirmPassword) {
             setErrorMessage("Passwords don't match!");
@@ -65,7 +65,7 @@ export default function Signup() {
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
                                 required
-                                isInvalid={validated && !name} // Show red border if invalid
+                                isInvalid={validated && !name} 
                             />
                             <Form.Control.Feedback type="invalid">
                                 Name is required.

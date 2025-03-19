@@ -3,9 +3,9 @@ import axios from "axios";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useSelector } from "react-redux";
 import { Button, Modal, Form } from "react-bootstrap";
-import DatePicker from "react-datepicker"; // Import date picker
-import "react-datepicker/dist/react-datepicker.css"; // Import necessary styles
-import { toast } from "react-toastify"; // For notifications
+import DatePicker from "react-datepicker"; 
+import "react-datepicker/dist/react-datepicker.css"; 
+import { toast } from "react-toastify"; 
 import "react-toastify/dist/ReactToastify.css";
 
 const AllEvents = () => {
@@ -87,8 +87,8 @@ const AllEvents = () => {
 
 
   const handleEditEvent = (event) => {
-    setEditingEvent(event); // Set the event data to be edited
-    setShowEditModal(true); // Show the modal
+    setEditingEvent(event); 
+    setShowEditModal(true); 
   };
 
   const handleSaveEdit = async () => {
@@ -123,9 +123,9 @@ const AllEvents = () => {
         );
       });
 
-      setShowEditModal(false); // Close the modal
+      setShowEditModal(false); 
       alert("Event updated successfully!");
-      window.location.reload() // Use toast notification
+      window.location.reload() 
     } catch (error) {
       console.error("Error editing event:", error.response?.data || error.message);
     }
@@ -134,7 +134,7 @@ const AllEvents = () => {
   const handleInterested = async (eventId) => {
     const token = localStorage.getItem("token");
     console.log("add interest clicked for event:", eventId);
-    console.log("Currently logged-in user ID:", user?.id); // ✅ Use `id` instead of `_id`
+    console.log("Currently logged-in user ID:", user?.id); 
     if (!isLoggedIn) {
       toast.warning("Please log in to show interest in an event.");
       return;
@@ -187,7 +187,7 @@ const AllEvents = () => {
 
 const handleRemoveInterest = async (eventId) => {
     console.log("Remove interest clicked for event:", eventId);
-    console.log("Currently logged-in user ID:", user?.id); // ✅ Use `id` instead of `_id`
+    console.log("Currently logged-in user ID:", user?.id); 
 
     if (!isLoggedIn) {
         toast.warning("Please log in to remove interest.");
@@ -199,7 +199,7 @@ const handleRemoveInterest = async (eventId) => {
 
         await axios.delete(`http://localhost:5000/api/events/${eventId}/user`, {
             headers: { Authorization: `Bearer ${token}` },
-            data: { userId: user.id }, // ✅ Use `user.id` instead of `user._id`
+            data: { userId: user.id }, 
         });
 
         // ✅ Update state properly
@@ -231,7 +231,7 @@ const handleRemoveInterest = async (eventId) => {
 const handleShowInterested = async (eventId) => {
   try {
     // Get the token from localStorage (or wherever you store the token)
-    const token = localStorage.getItem('token'); // Replace with the actual way you store the token
+    const token = localStorage.getItem('token'); 
 
     if (!token) {
       console.error("No token found");
@@ -249,8 +249,8 @@ const handleShowInterested = async (eventId) => {
 
     if (response.status === 200) {
       const event = response.data;
-      setInterestedUsers(event.interestedUsers); // Set the interested users from the fetched event
-      setShowInterestedModal(true); // Show the modal
+      setInterestedUsers(event.interestedUsers); 
+      setShowInterestedModal(true); 
     } else {
       console.error("Error fetching event:", response.data.message);
     }
@@ -281,7 +281,7 @@ return (
         <div
             className={`alert alert-${messageType}`}
             role="alert"
-            onClick={() => setMessage('')} // Click event to clear the message
+            onClick={() => setMessage('')} 
         >
             {message}
         </div>
