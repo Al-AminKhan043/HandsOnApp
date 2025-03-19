@@ -136,7 +136,7 @@ Ensure you have installed:
 
 - **Frontend:** Vercel
     - Frontend Repository: [GitHub Frontend Repo](https://github.com/Al-AminKhan043/HandsOnApp)
-    - Live Site: [https://handson-frontend.vercel.app/](https://hands-on-ixnutyu7v-al-amin-khans-projects-58808c94.vercel.app/)
+    - Live Site: [https://handson-frontend.vercel.app/](https://hands-on-app.vercel.app/)
 
 
 ## Contributing
