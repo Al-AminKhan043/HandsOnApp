@@ -34,7 +34,7 @@ export default function NewPost() {
 
     try {
       await axios.post(
-        `http://localhost:5000/api/posts/new`,
+        `https://handson-backend-ix8y.onrender.com/api/posts/new`,
         { title, level, description },
         {
           headers: {

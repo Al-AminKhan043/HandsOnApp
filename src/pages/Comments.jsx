@@ -19,7 +19,7 @@ const Comments = ({ post }) => {
 
     if (window.confirm("Are you sure you want to delete this comment?")) {
       try {
-        await axios.delete(`http://localhost:5000/api/comments/${commentId}`, {
+        await axios.delete(`https://handson-backend-ix8y.onrender.com/api/comments/${commentId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -41,7 +41,7 @@ const Comments = ({ post }) => {
 
     try {
       await axios.put(
-        `http://localhost:5000/api/comments/${editingCommentId}`,
+        `https://handson-backend-ix8y.onrender.com/api/comments/${editingCommentId}`,
         { text: currentComment },
         {
           headers: {

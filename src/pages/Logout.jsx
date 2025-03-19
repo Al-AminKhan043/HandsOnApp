@@ -11,7 +11,7 @@ const Logout=() => {
   const handleLogout = async () => {
     try {
       // Make a request to the backend logout endpoint
-      await axios.post("http://localhost:5000/api/users/logout", {}, { withCredentials: true });
+      await axios.post("https://handson-backend-ix8y.onrender.com/api/users/logout", {}, { withCredentials: true });
 
       // Dispatch the logout action to update Redux state
       dispatch(logout());

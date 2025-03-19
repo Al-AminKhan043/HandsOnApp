@@ -23,7 +23,7 @@ const AllEvents = () => {
 
   const fetchEvents = useCallback(async () => {
     try {
-      const res = await axios.get(`http://localhost:5000/api/events?page=${page}&limit=5`);
+      const res = await axios.get(`https://handson-backend-ix8y.onrender.com/api/events?page=${page}&limit=5`);
   
       if (res.data.events.length > 0) {
         setEvents((prevEvents) => {
@@ -68,7 +68,7 @@ const AllEvents = () => {
 
     if (window.confirm("Are you sure you want to delete this event?")) {
         try {
-            await axios.delete(`http://localhost:5000/api/events/${eventId}`, {
+            await axios.delete(`https://handson-backend-ix8y.onrender.com/api/events/${eventId}`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
 
@@ -101,7 +101,7 @@ const AllEvents = () => {
 
     try {
       const res = await axios.put(
-        `http://localhost:5000/api/events/${editingEvent._id}/edit`,
+        `https://handson-backend-ix8y.onrender.com/api/events/${editingEvent._id}/edit`,
         {
           title: editingEvent.title,
           description: editingEvent.description,
@@ -143,7 +143,7 @@ const AllEvents = () => {
     try {
       // Proceed to mark the user as interested
       const response = await axios.post(
-        `http://localhost:5000/api/events/${eventId}/user`,
+        `https://handson-backend-ix8y.onrender.com/api/events/${eventId}/user`,
         {
           userId: user._id,
         },
@@ -197,7 +197,7 @@ const handleRemoveInterest = async (eventId) => {
     try {
         const token = localStorage.getItem("token");
 
-        await axios.delete(`http://localhost:5000/api/events/${eventId}/user`, {
+        await axios.delete(`https://handson-backend-ix8y.onrender.com/api/events/${eventId}/user`, {
             headers: { Authorization: `Bearer ${token}` },
             data: { userId: user.id }, 
         });
@@ -241,7 +241,7 @@ const handleShowInterested = async (eventId) => {
     // Set the Bearer token in the request headers
     
     // Make a GET request to fetch event by ID using axios and include the Bearer token in headers
-    const response = await axios.get(`http://localhost:5000/api/events/${eventId}`, 
+    const response = await axios.get(`https://handson-backend-ix8y.onrender.com/api/events/${eventId}`, 
       {
         headers: { Authorization: `Bearer ${token}` }
       }
