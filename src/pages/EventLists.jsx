@@ -21,7 +21,7 @@ const EventLists = () => {
             </li>
             <li className="nav-item">
               {isLoggedIn && (
-                <Link to="newEvent" className="nav-link fw-bold">Create Event</Link>
+                <Link to="/events/newEvent" className="nav-link fw-bold">Create Event</Link>
               )}
             </li>
           </ul>
