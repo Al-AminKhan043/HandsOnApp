@@ -3,7 +3,7 @@ import {Link, Route, Routes} from 'react-router-dom'
 import AllEvents from './AllEvents'
 import NewEvent from './NewEvent'
 import {useSelector} from 'react-redux'
-
+import NotFound from "./NotFound";
 
 
 
@@ -31,6 +31,7 @@ const EventLists = () => {
       <Routes>
         <Route path="/" element={<AllEvents />} />
         {isLoggedIn && <Route path="newEvent" element={<NewEvent />} />}
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </div>
     </>
