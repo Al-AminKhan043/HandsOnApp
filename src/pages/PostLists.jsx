@@ -3,6 +3,7 @@ import { Link,Route,Routes } from "react-router-dom";
 import AllPosts from "./allPosts";
 import NewPost from "./NewPost";
 import { useSelector } from "react-redux";
+import NotFound from "./NotFound";
 const PostLists = () => {
   const { isLoggedIn } = useSelector((state) => state.auth);
   return(
@@ -23,7 +24,8 @@ const PostLists = () => {
 
     <Routes>
       <Route path="/" element={<AllPosts></AllPosts>}></Route>
-      {isLoggedIn && <Route path="newPost" element={<NewPost></NewPost>}></Route>} 
+      {isLoggedIn && <Route path="newPost" element={<NewPost></NewPost>}></Route>}
+      <Route path="*" element={<NotFound />} /> 
     </Routes>
     </div>
   )

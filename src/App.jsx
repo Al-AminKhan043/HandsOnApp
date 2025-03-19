@@ -6,14 +6,13 @@ import Home from "./pages/Home";
 import Account from "./pages/Account";
 import EventLists from "./pages/EventLists";
 import PostLists from "./pages/PostLists";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import NotFound from "./pages/NotFound";
 
 function App() {
   return (
     <Router>
       <Navbar />
-      <ToastContainer />
+  
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} /> 
@@ -21,7 +20,9 @@ function App() {
         <Route path="/account" element={<Account />} />
         <Route path="/events/*" element={<EventLists />} />
         <Route path="/posts/*" element={<PostLists />} />
+        <Route path="*" element={<NotFound />} /> 
       </Routes>
+      
     </Router>
   );
 }

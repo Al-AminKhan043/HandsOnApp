@@ -89,7 +89,7 @@ const Comments = ({ post }) => {
                     {isCommentOwner && (
                       <div className="d-flex">
                         <Button
-                          variant="outline-warning"
+                          variant="warning"
                           size="sm"
                           className="me-2"
                           onClick={() => {
@@ -98,14 +98,14 @@ const Comments = ({ post }) => {
                             setShowEditModal(true);
                           }}
                         >
-                          Edit
+                          ✏️ Edit 
                         </Button>
                         <Button
-                          variant="outline-danger"
+                          variant="danger"
                           size="sm"
                           onClick={() => handleDeleteComment(comment._id)}
                         >
-                          Delete
+                          🗑️ Delete 
                         </Button>
                       </div>
                     )}
