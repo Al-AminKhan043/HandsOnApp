@@ -176,7 +176,7 @@ const AllEvents = () => {
       // Check for specific error message from backend and show appropriate message
       if (error.response?.data?.message === "User is already interested in this event") {
         console.log("User is already interested in this event."); // Log info
-        toast.info("You are already in the interested list.");
+        alert("You are already in the interested list.");
       } else {
         console.error("Error marking interest:", error.response?.data || error.message);
         toast.error("Failed to mark interest.");
@@ -218,7 +218,7 @@ const handleRemoveInterest = async (eventId) => {
     } catch (error) {
       if (error.response?.data?.message === "User is not in the interested users list") {
         console.log("User is not in the interested list.");
-        toast.info("You are not in the interested list.");
+        alert("You are not in the interested list.");
       } else {
         console.error("Error removing interest:", error.response?.data || error.message);
         toast.error("Failed to remove interest.");
