@@ -14,7 +14,7 @@ const PostLists = () => {
             <Link to='/posts' className="nav-link fw-bold">All Posts</Link>
           </li>
           <li className="nav-item">
-            {isLoggedIn && <Link to="newPost" className="nav-link fw-bold">Create Post</Link>}
+            {isLoggedIn && <Link to="/posts/newPost" className="nav-link fw-bold">Create Post</Link>}
             
           </li>
         </ul>
