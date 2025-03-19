@@ -1,6 +1,6 @@
 import React from "react";
 import { Link,Route,Routes } from "react-router-dom";
-import {AllPosts} from "./allPosts";
+import AllPosts from "./allPosts";
 import NewPost from "./NewPost";
 import { useSelector } from "react-redux";
 import NotFound from "./NotFound";
