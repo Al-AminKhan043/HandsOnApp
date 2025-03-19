@@ -2,17 +2,17 @@ import React, { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useSelector } from "react-redux";
-import { Button, Modal, Form } from "react-bootstrap"; // Import Modal and Form components
+import { Button, Modal, Form } from "react-bootstrap"; 
 import Comments from "./Comments";
 
 const AllPosts = () => {
   const [posts, setPosts] = useState([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
-  const [showEditModal, setShowEditModal] = useState(false); // State to control modal visibility
+  const [showEditModal, setShowEditModal] = useState(false);
   const [editingPost, setEditingPost] = useState(null);
   const [message, setMessage] = useState('');
-  const [messageType, setMessageType] = useState(''); // State to store the post being edited
+  const [messageType, setMessageType] = useState(''); 
 
   const { isLoggedIn, user } = useSelector((state) => state.auth);
 
@@ -68,8 +68,8 @@ const AllPosts = () => {
   };
 
   const handleEditPost = (post) => {
-    setEditingPost(post); // Set the post data to be edited
-    setShowEditModal(true); // Show the modal
+    setEditingPost(post); 
+    setShowEditModal(true); 
   };
 
   const handleSaveEdit = async () => {
@@ -101,7 +101,7 @@ const AllPosts = () => {
         );
       });
 
-      setShowEditModal(false); // Close the modal
+      setShowEditModal(false); 
       alert("Post updated successfully!");
       window.location.reload()
     } catch (error) {
@@ -117,7 +117,7 @@ const AllPosts = () => {
         <div
             className={`alert alert-${messageType}`}
             role="alert"
-            onClick={() => setMessage('')} // Click event to clear the message
+            onClick={() => setMessage('')} 
         >
             {message}
         </div>

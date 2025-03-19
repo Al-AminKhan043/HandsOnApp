@@ -1,6 +1,6 @@
 import React from "react";
 import { Container, Row, Col } from "react-bootstrap";
-import "./Home.css"; // Import custom CSS for styling
+import "./Home.css"; 
 
 export default function Home() {
   return (
