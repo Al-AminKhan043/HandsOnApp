@@ -168,7 +168,7 @@ const AllEvents = () => {
         )
       );
   
-      toast.success("Marked as interested!");
+      alert("Marked as interested!");
     } catch (error) {
       // Log detailed error message
       console.error("Error marking interest:", error.response?.data || error.message);
@@ -214,7 +214,7 @@ const handleRemoveInterest = async (eventId) => {
             )
         );
 
-        toast.info("Interest removed.");
+        alert("Interest removed.");
     } catch (error) {
       if (error.response?.data?.message === "User is not in the interested users list") {
         console.log("User is not in the interested list.");
