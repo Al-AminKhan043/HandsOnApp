@@ -298,14 +298,12 @@ return (
          
         const eventDateTime= (event.date);
          const currentDateTime = getCurrentDateMinusOneDayInBST();
-         console.log(event.title)
-        console.log('current date-1 day', currentDateTime.split('T')[0]);
-        console.log('event datetime', eventDateTime.split('T')[0]);
+         
 
         // Compare current date minus one day with the event date (without time)
         const isPastEvent = currentDateTime.split('T')[0] >= eventDateTime.split('T')[0];
 
-        console.log(isPastEvent);
+        
 
         return (
           <div key={event._id} className="card mb-4 shadow-sm border-0 rounded-3" style={{ backgroundColor: "#f8f9fa" }}>
