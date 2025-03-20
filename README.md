@@ -132,7 +132,7 @@ Ensure you have installed:
 
 - **Backend:** Render
     - Backend Repository: [GitHub Backend Repo](https://github.com/Al-AminKhan043/handsOn-backend)
-    - Live API URL: [https://handson-backend.onrender.com/](https://handson-backend-ix8y.onrender.com)
+   
 
 - **Frontend:** Vercel
     - Frontend Repository: [GitHub Frontend Repo](https://github.com/Al-AminKhan043/HandsOnApp)
@@ -149,9 +149,6 @@ Ensure you have installed:
 4. Push to the branch (`git push origin feature-branch`)
 5. Open a Pull Request
 
-## License
-
-This project is open-source and available under the MIT License.
 
 ## Contact
 
