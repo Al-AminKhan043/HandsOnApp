@@ -68,7 +68,7 @@ const NewEvent = () => {
       const data = await response.json();
 
       if (response.ok) {
-        setSuccess('Post created successfully!');
+        setSuccess('Event created successfully!');
         setFormData({ title: "", description: "", date: new Date(), time: "10:00", location: "", category: "" });
       } else {
         toast.error(data.message || "Error creating event.");
