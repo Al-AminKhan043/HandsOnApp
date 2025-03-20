@@ -29,7 +29,7 @@ HandsOn is built using the MERN (MongoDB, Express, React, Node.js) stack and dep
 - **React Bootstrap** - Styling
 - **React Router** - Navigation
 - **Axios** - API Requests
-- **React Toastify** - Notifications
+
 
 ## Setup Instructions
 
